@@ -114,8 +114,8 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
 
 def start(args):
     debug = args.debug
-    device = int(args.device) if args.device != "cpu" else args.device
-    assert(torch.__version__ == "1.3.1"),  "Please install torch version 1.0.0"
+    device = 0
+
 
     print(80 * "=")
     print("INITIALIZING")
