@@ -8,6 +8,7 @@ Sahil Chopra <schopra8@stanford.edu>
 
 import sys
 
+
 class PartialParse(object):
     def __init__(self, sentence):
         """Initializes this partial parse.
@@ -31,9 +32,10 @@ class PartialParse(object):
         ### Note: The root token should be represented with the string "ROOT"
         ###
         ### YOUR CODE HERE (3 Lines)
-        raise NotImplementedError
+        self.stack = list()
+        self.buffer = ['ROOT'] + [word for word in sentence]
+        self.dependencies = []
         ### END YOUR CODE
-
 
     def parse_step(self, transition):
         """Performs a single parse step by applying the given transition to this partial parse
@@ -49,7 +51,12 @@ class PartialParse(object):
         ###         2. Left Arc
         ###         3. Right Arc
         ### YOUR CODE HERE (~7-10 Lines)
-        raise NotImplementedError
+        if transition == 'S':
+            self.stack.insert(0, self.buffer.pop(0))
+        elif transition == 'RA':
+            self.dependencies.append((self.stack[0], self.stack.pop(1)))
+        elif transition == 'LA':
+            self.dependencies.append((self.stack[1], self.stack.pop(0)))
         ### END YOUR CODE
 
     def parse(self, transitions):
@@ -142,7 +149,7 @@ def test_parse():
     dependencies = PartialParse(sentence).parse(["S", "S", "S", "LA", "RA", "RA"])
     dependencies = tuple(sorted(dependencies))
     expected = (('ROOT', 'parse'), ('parse', 'sentence'), ('sentence', 'this'))
-    assert dependencies == expected,  \
+    assert dependencies == expected, \
         "parse test resulted in dependencies {:}, expected {:}".format(dependencies, expected)
     assert tuple(sentence) == ("parse", "this", "sentence"), \
         "parse test failed: the input sentence should not be modified"
@@ -154,6 +161,7 @@ class DummyModel(object):
     First shifts everything onto the stack and then does exclusively right arcs if the first word of
     the sentence is "right", "left" if otherwise.
     """
+
     def predict(self, partial_parses):
         return [("RA" if pp.stack[1] is "right" else "LA") if len(pp.buffer) == 0 else "S"
                 for pp in partial_parses]
@@ -189,11 +197,13 @@ def test_minibatch_parse():
 if __name__ == '__main__':
     args = sys.argv
     if len(args) != 2:
-        raise Exception("You did not provide a valid keyword. Either provide 'part_d' or 'part_e', when executing this script")
+        raise Exception(
+            "You did not provide a valid keyword. Either provide 'part_d' or 'part_e', when executing this script")
     elif args[1] == "part_d":
         test_parse_step()
         test_parse()
     elif args[1] == "part_e":
         test_minibatch_parse()
     else:
-        raise Exception("You did not provide a valid keyword. Either provide 'part_d' or 'part_e', when executing this script")
+        raise Exception(
+            "You did not provide a valid keyword. Either provide 'part_d' or 'part_e', when executing this script")
