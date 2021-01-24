@@ -51,11 +51,11 @@ class PartialParse(object):
         ###         2. Left Arc
         ###         3. Right Arc
         ### YOUR CODE HERE (~7-10 Lines)
-        if transition == 'S':
+        if transition == 'S' and len(self.buffer) > 0:
             self.stack.append(self.buffer.pop(0))
-        elif transition == 'LA':
+        elif transition == 'LA' and len(self.stack) > 1:
             self.dependencies.append((self.stack[-1], self.stack.pop(-2)))
-        elif transition == 'RA':
+        elif transition == 'RA' and len(self.stack) > 1:
             self.dependencies.append((self.stack[-2], self.stack.pop(-1)))
         ### END YOUR CODE
 

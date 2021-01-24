@@ -71,7 +71,7 @@ class ParserModel(nn.Module):
         ###     Xavier Init: https://pytorch.org/docs/stable/nn.html#torch.nn.init.xavier_uniform_
         ###     Dropout: https://pytorch.org/docs/stable/nn.html#torch.nn.Dropout
         ### YOUR CODE HERE (~5 Lines)
-        self.embed_to_hidden = nn.Linear(self.embed_size, self.hidden_size)
+        self.embed_to_hidden = nn.Linear(self.embed_size * self.n_features, self.hidden_size)
         self.hidden_to_logits = nn.Linear(self.hidden_size, self.n_classes)
         self.dropout = nn.Dropout(p=self.dropout_prob)
         torch.nn.init.xavier_uniform_(self.embed_to_hidden.weight, gain=1.0)

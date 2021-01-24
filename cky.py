@@ -187,3 +187,13 @@ if __name__ == '__main__':
 		else:
 			print("FAILED TO PARSE!")
 
+
+"""
+answers
+a) the reponsible rule is NP -> NP PP, this is a recursive rule that is capable of inflating the sentence
+b) all rules have same weight and Noun has 5/6 chance to become terminal, and only 1/6 chance to create an ADJ.
+This is the only source for ADJ.
+c) for the problem in a - decrease the weight of the rule: NP NP PP (or increase NP Det Noun)
+for the problem in b - increase the probability of the rule Noun Adj Noun
+d)
+"""

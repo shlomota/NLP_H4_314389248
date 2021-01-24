@@ -167,3 +167,114 @@ def main(arguments_str):
 
 if __name__ == "__main__":
     main(None)
+
+
+
+"""
+C:\ProgramData\Anaconda3\python.exe C:/Users/soki/PycharmProjects/NLP_HW4/run.py --device cuda
+================================================================================
+INITIALIZING
+================================================================================
+Loading data...
+took 2.26 seconds
+Building parser...
+took 1.41 seconds
+Loading pretrained embeddings...
+took 3.57 seconds
+Vectorizing data...
+took 1.79 seconds
+Preprocessing training data...
+took 69.51 seconds
+took 2.55 seconds
+
+================================================================================
+TRAINING
+================================================================================
+Epoch 1 out of 10
+100%|██████████| 1848/1848 [00:33<00:00, 55.14it/s]
+Average Train Loss: 0.17826719019255596
+Evaluating on dev set
+1445850it [00:00, 30122562.06it/s]      
+- dev UAS: 84.54
+New best dev UAS! Saving model.
+  0%|          | 0/1848 [00:00<?, ?it/s]
+Epoch 2 out of 10
+100%|██████████| 1848/1848 [00:29<00:00, 62.05it/s]
+Average Train Loss: 0.11351320215650064
+Evaluating on dev set
+1445850it [00:00, 24929435.33it/s]      
+- dev UAS: 86.45
+New best dev UAS! Saving model.
+
+Epoch 3 out of 10
+100%|██████████| 1848/1848 [00:30<00:00, 60.36it/s]
+Average Train Loss: 0.09998108191189892
+Evaluating on dev set
+1445850it [00:00, 25367203.65it/s]      
+- dev UAS: 87.28
+New best dev UAS! Saving model.
+  0%|          | 0/1848 [00:00<?, ?it/s]
+Epoch 4 out of 10
+100%|██████████| 1848/1848 [00:30<00:00, 61.29it/s]
+Average Train Loss: 0.09139955503809633
+Evaluating on dev set
+1445850it [00:00, 26519794.46it/s]      
+- dev UAS: 87.69
+New best dev UAS! Saving model.
+
+Epoch 5 out of 10
+100%|██████████| 1848/1848 [00:36<00:00, 49.95it/s]
+Average Train Loss: 0.085175301093463
+Evaluating on dev set
+1445850it [00:00, 21906823.25it/s]      
+- dev UAS: 87.67
+
+Epoch 6 out of 10
+100%|██████████| 1848/1848 [00:36<00:00, 50.07it/s]
+Average Train Loss: 0.08035307952497171
+Evaluating on dev set
+1445850it [00:00, 20364603.14it/s]      
+- dev UAS: 88.09
+New best dev UAS! Saving model.
+  0%|          | 0/1848 [00:00<?, ?it/s]
+Epoch 7 out of 10
+100%|██████████| 1848/1848 [00:32<00:00, 57.50it/s]
+Average Train Loss: 0.07632694575629193
+Evaluating on dev set
+1445850it [00:00, 27805165.67it/s]      
+- dev UAS: 88.20
+New best dev UAS! Saving model.
+  0%|          | 0/1848 [00:00<?, ?it/s]
+Epoch 8 out of 10
+100%|██████████| 1848/1848 [00:29<00:00, 62.06it/s]
+Average Train Loss: 0.07281426161334112
+Evaluating on dev set
+1445850it [00:00, 20081575.04it/s]      
+- dev UAS: 88.37
+New best dev UAS! Saving model.
+  0%|          | 0/1848 [00:00<?, ?it/s]
+Epoch 9 out of 10
+100%|██████████| 1848/1848 [00:28<00:00, 64.78it/s]
+Average Train Loss: 0.06947017599147184
+Evaluating on dev set
+1445850it [00:00, 22240400.33it/s]      
+  0%|          | 0/1848 [00:00<?, ?it/s]- dev UAS: 88.36
+
+Epoch 10 out of 10
+100%|██████████| 1848/1848 [00:28<00:00, 64.47it/s]
+Average Train Loss: 0.06689222400112972
+Evaluating on dev set
+1445850it [00:00, 15715474.48it/s]      
+- dev UAS: 88.27
+
+================================================================================
+TESTING
+================================================================================
+Restoring the best model weights found on the dev set
+Final evaluation on test set
+2919736it [00:00, 39456209.19it/s]      
+- test UAS: 89.00
+Done!
+
+Process finished with exit code 0
+"""
