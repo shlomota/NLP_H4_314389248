@@ -76,117 +76,150 @@ grammar_raw = """# Symbols in the grammar are case-sensitive.
 1	Prep	on
 1	Prep	under
 1	Prep	in
-""" 
+"""
+
 
 class PCFG(object):
-	def __init__(self):
-		self._rules = defaultdict(list)
-		self._sums = defaultdict(float)
+    def __init__(self):
+        self._rules = defaultdict(list)
+        self._sums = defaultdict(float)
 
-	def add_rule(self, lhs, rhs, weight):
-		assert(isinstance(lhs, str))
-		assert(isinstance(rhs, list))
-		self._rules[lhs].append((rhs, weight))
-		self._sums[lhs] += weight
+    def add_rule(self, lhs, rhs, weight):
+        assert (isinstance(lhs, str))
+        assert (isinstance(rhs, list))
+        self._rules[lhs].append((rhs, weight))
+        self._sums[lhs] += weight
 
-	@classmethod
-	def from_file_assert_cnf(cls):
-		grammar = PCFG()
-		for line in grammar_raw.split("\n"):
-			line = line.split("#")[0].strip()
-			if not line: continue
-			w,l,r = line.split(None, 2)
-			r = r.split()
-			w = float(w)
-			if len(r) > 2:
-				raise Exception("Grammar is not CNF, right-hand-side is: " + str(r))
-			if len(r) <= 0:
-				raise Exception("Grammar is not CNF, right-hand-side is empty: " + str(r))
-			grammar.add_rule(l,r,w)
-		for lhs, rhs_and_weights in grammar._rules.items():
-			for rhs, weight in rhs_and_weights:
-				if len(rhs) == 1 and not grammar.is_terminal(rhs[0]):
-					raise Exception("Grammar has unary rule: " + str(rhs))
-				elif len(rhs) == 2 and (grammar.is_terminal(rhs[0]) or grammar.is_terminal(rhs[1])):
-					raise Exception("Grammar has binary rule with terminals: " + str(rhs))
+    @classmethod
+    def from_file_assert_cnf(cls):
+        grammar = PCFG()
+        for line in grammar_raw.split("\n"):
+            line = line.split("#")[0].strip()
+            if not line: continue
+            w, l, r = line.split(None, 2)
+            r = r.split()
+            w = float(w)
+            if len(r) > 2:
+                raise Exception("Grammar is not CNF, right-hand-side is: " + str(r))
+            if len(r) <= 0:
+                raise Exception("Grammar is not CNF, right-hand-side is empty: " + str(r))
+            grammar.add_rule(l, r, w)
+        for lhs, rhs_and_weights in grammar._rules.items():
+            for rhs, weight in rhs_and_weights:
+                if len(rhs) == 1 and not grammar.is_terminal(rhs[0]):
+                    raise Exception("Grammar has unary rule: " + str(rhs))
+                elif len(rhs) == 2 and (grammar.is_terminal(rhs[0]) or grammar.is_terminal(rhs[1])):
+                    raise Exception("Grammar has binary rule with terminals: " + str(rhs))
 
-		return grammar
+        return grammar
 
-	def is_terminal(self, symbol): return symbol not in self._rules
+    def is_terminal(self, symbol):
+        return symbol not in self._rules
 
-	def is_preterminal(self, rhs):
-		return len(rhs) == 1 and self.is_terminal(rhs[0])
+    def is_preterminal(self, rhs):
+        return len(rhs) == 1 and self.is_terminal(rhs[0])
 
-	def gen(self, symbol):
-		if self.is_terminal(symbol): return symbol
-		else:
-			expansion = self.random_expansion(symbol)
-			return " ".join(self.gen(s) for s in expansion)
+    def gen(self, symbol):
+        if self.is_terminal(symbol):
+            return symbol
+        else:
+            expansion = self.random_expansion(symbol)
+            return " ".join(self.gen(s) for s in expansion)
 
-	def gentree(self, symbol):
-		"""
-			Generates a derivation tree from a given symbol
-		"""
-		if self.is_terminal(symbol): return symbol
-		if self.is_preterminal(symbol):
-			return "("+symbol+" "+self.gentree(self.random_expansion(symbol)) +")"
-		else:
-			expansion = self.random_expansion(symbol)
-			return "("+symbol+" "+" ".join(self.gentree(s) for s in expansion)+")"
-		return ""
+    def gentree(self, symbol):
+        """
+            Generates a derivation tree from a given symbol
+        """
+        if self.is_terminal(symbol): return symbol
+        if self.is_preterminal(symbol):
+            return "(" + symbol + " " + self.gentree(self.random_expansion(symbol)) + ")"
+        else:
+            expansion = self.random_expansion(symbol)
+            return "(" + symbol + " " + " ".join(self.gentree(s) for s in expansion) + ")"
+        return ""
 
-	def random_sent(self):
-		return self.gen("S")
+    def random_sent(self):
+        return self.gen("S")
 
-	def random_tree(self):
-		return self.gentree("S")
+    def random_tree(self):
+        return self.gentree("S")
 
-	def random_expansion(self, symbol):
-		"""
-		Generates a random RHS for symbol, in proportion to the weights.
-		"""
-		p = random.random() * self._sums[symbol]
-		for r,w in self._rules[symbol]:
-			p = p - w
-			if p < 0: return r
-		return r
+    def random_expansion(self, symbol):
+        """
+        Generates a random RHS for symbol, in proportion to the weights.
+        """
+        p = random.random() * self._sums[symbol]
+        for r, w in self._rules[symbol]:
+            p = p - w
+            if p < 0: return r
+        return r
 
 
 def cky(pcfg, sent):
-	
-	pi = defaultdict(float)
-	bp = defaultdict(list)
-	sent = sent.split(" ")
-	### YOUR CODE HERE
-	raise NotImplementedError 
-	### END YOUR CODE
-	return bp,pi
-	
-	
-def gen_result(bp,i,j,TAG):
-	s, tup = bp[i, j, TAG]
-	if len(tup) > 1:
-		Y, Z = tup
-		return f"({TAG} {gen_result(bp,i,s,Y)} {gen_result(bp,s+1,j,Z)})"
-	else:
-		return f"({TAG} {tup[0]})"
+    pi = defaultdict(float)
+    bp = defaultdict(list)
+    sent = sent.split(" ")
+    ### YOUR CODE HERE
+    ###############HERE INITIALIZATION##########################
+    from itertools import product
+    n = len(sent)
+    non_terminals = list(pcfg._rules.keys())
+
+    def distance_generator(distance):
+        for i in range(n - distance):
+            for X in non_terminals:
+                yield (i, i + distance, X)
+
+    pcfg_copy = defaultdict(dict)
+    for non_terminal, list_of_yields in pcfg._rules.items():
+        for rhs in list_of_yields:
+            rhs_prob = rhs[1] / pcfg._sums[non_terminal]
+            pcfg_copy[non_terminal][tuple(rhs[0])] = rhs_prob
+
+    for i, _, X in distance_generator(0):
+        if (sent[i],) in pcfg_copy[X]:
+            pi[(i, i, X)] = pcfg_copy[X][(sent[i],)]
+            bp[i, i, X] = [i, (sent[i],)]
+    #######################################
+    for d in range(1, n):
+        for i, j, X in distance_generator(d):
+            yields = pcfg_copy[X].keys()
+            pi[(i, j, X)] = 0
+            for s, rule in product(range(i, j), yields):
+                if len(rule) < 2:
+                    continue
+                current_prob = pcfg_copy[X][rule] * pi[(i, s, rule[0])] * pi[(s + 1, j, rule[1])]
+                if current_prob >= pi[(i, j, X)]:
+                    pi[(i, j, X)] = current_prob  # q(X->YZ)*pi(i,s,Y)*pi(s_+1,j,Z))
+                    bp[i, j, X] = [s, rule]
+    ### END YOUR CODE
+    return bp, pi
+
+
+def gen_result(bp, i, j, TAG):
+    s, tup = bp[i, j, TAG]
+    if len(tup) > 1:
+        Y, Z = tup
+        return f"({TAG} {gen_result(bp, i, s, Y)} {gen_result(bp, s + 1, j, Z)})"
+    else:
+        return f"({TAG} {tup[0]})"
+
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
-	parser.add_argument("--mode", choices=['gen', 'inference'])
-	parser.add_argument("--sent", type=str,default="the president ate the delicious sandwich")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=['gen', 'inference'])
+    parser.add_argument("--sent", type=str, default="the president ate the delicious sandwich")
 
-	args = parser.parse_args()
-	pcfg = PCFG.from_file_assert_cnf()
-	if args.mode=="gen":
-		print(pcfg.random_sent())
-	else:
-		bp,pi = cky(pcfg, args.sent)
-		if(pi[0,len(args.sent.split(" "))-1,'S']>0):
-			print(gen_result(bp,0,len(args.sent.split(" "))-1,'S'))
-		else:
-			print("FAILED TO PARSE!")
-
+    args = parser.parse_args()
+    pcfg = PCFG.from_file_assert_cnf()
+    if args.mode == "gen":
+        print(pcfg.random_sent())
+    else:
+        bp, pi = cky(pcfg, args.sent)
+        if (pi[0, len(args.sent.split(" ")) - 1, 'S'] > 0):
+            print(gen_result(bp, 0, len(args.sent.split(" ")) - 1, 'S'))
+        else:
+            print("FAILED TO PARSE!")
 
 """
 answers
@@ -196,4 +229,7 @@ This is the only source for ADJ.
 c) for the problem in a - decrease the weight of the rule: NP NP PP (or increase NP Det Noun)
 for the problem in b - increase the probability of the rule Noun Adj Noun
 d)
+=========================================================================================
+C:\Users\chaimc\AppData\Local\Programs\Python\Python39\python.exe C:/NLP/NLP_HW4_314389248/cky.py --mode inference --sent "the president ate the delicious sandwich"
+(S (NP (Det the) (Noun president)) (VP (Verb ate) (NP (Det the) (Noun (Adj delicious) (Noun sandwich)))))
 """

@@ -20,6 +20,7 @@ from tqdm import tqdm
 from parser_model import ParserModel
 from utils.parser_utils import minibatches, load_and_preprocess_data, AverageMeter
 
+
 # -----------------
 # Primary Functions
 # -----------------
@@ -36,7 +37,6 @@ def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1
     """
     best_dev_UAS = 0
 
-
     ### TODO:
     ###      1) Construct Adam Optimizer in variable `optimizer`
     ###      2) Construct the Cross Entropy Loss Function in variable `loss_func`
@@ -49,7 +49,6 @@ def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1
     ### YOUR CODE HERE (~2-7 lines)
     optimizer = torch.optim.Adam(params=parser.model.parameters(), lr=lr)
     loss_func = nn.CrossEntropyLoss()
-
     ### END YOUR CODE
 
     for epoch in range(n_epochs):
@@ -79,14 +78,14 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
 
     @return dev_UAS (float): Unlabeled Attachment Score (UAS) for dev data
     """
-    parser.model.train() # Places model in "train" mode, i.e. apply dropout layer
+    parser.model.train()  # Places model in "train" mode, i.e. apply dropout layer
     n_minibatches = math.ceil(len(train_data) / batch_size)
     loss_meter = AverageMeter()
 
     with tqdm(total=(n_minibatches)) as prog:
         for i, (train_x, train_y) in enumerate(minibatches(train_data, batch_size)):
-            optimizer.zero_grad()   # remove any baggage in the optimizer
-            loss = 0. # store loss for this batch here
+            optimizer.zero_grad()  # remove any baggage in the optimizer
+            loss = 0.  # store loss for this batch here
             train_x = torch.from_numpy(train_x).long().to(device)
             train_y = torch.from_numpy(train_y.nonzero()[1]).long().to(device)
 
@@ -109,18 +108,18 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
             prog.update(1)
             loss_meter.update(loss.item())
 
-    print ("Average Train Loss: {}".format(loss_meter.avg))
+    print("Average Train Loss: {}".format(loss_meter.avg))
 
-    print("Evaluating on dev set",)
-    parser.model.eval() # Places model in "eval" mode, i.e. don't apply dropout layer
+    print("Evaluating on dev set", )
+    parser.model.eval()  # Places model in "eval" mode, i.e. don't apply dropout layer
     dev_UAS, _ = parser.parse(dev_data, device=device)
     print("- dev UAS: {:.2f}".format(dev_UAS * 100.0))
     return dev_UAS
 
+
 def start(args):
     debug = args.debug
     device = 0
-
 
     print(80 * "=")
     print("INITIALIZING")
@@ -148,14 +147,16 @@ def start(args):
         print("TESTING")
         print(80 * "=")
         print("Restoring the best model weights found on the dev set")
-        parser.model.load_state_dict(torch.load(output_path, map_location=device if device=="cpu" else f"cuda:{device}"))
-        print("Final evaluation on test set",)
+        parser.model.load_state_dict(
+            torch.load(output_path, map_location=device if device == "cpu" else f"cuda:{device}"))
+        print("Final evaluation on test set", )
         parser.model.eval()
         UAS, dependencies = parser.parse(test_data, device=device)
         print("- test UAS: {:.2f}".format(UAS * 100.0))
         print("Done!")
 
-def main(arguments_str):  
+
+def main(arguments_str):
     args = sys.argv[1:]
     if arguments_str:
         args = arguments_str.split()
@@ -164,6 +165,7 @@ def main(arguments_str):
     parser.add_argument('--debug', action="store_true", help="Debug")
     parser.add_argument('--device', type=str, default="cpu", help="Device to use")
     start(parser.parse_args(args))
+
 
 if __name__ == "__main__":
     main(None)
