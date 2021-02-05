@@ -220,16 +220,3 @@ if __name__ == '__main__':
             print(gen_result(bp, 0, len(args.sent.split(" ")) - 1, 'S'))
         else:
             print("FAILED TO PARSE!")
-
-"""
-answers
-a) the reponsible rule is NP -> NP PP, this is a recursive rule that is capable of inflating the sentence
-b) all rules have same weight and Noun has 5/6 chance to become terminal, and only 1/6 chance to create an ADJ.
-This is the only source for ADJ.
-c) for the problem in a - decrease the weight of the rule: NP NP PP (or increase NP Det Noun)
-for the problem in b - increase the probability of the rule Noun Adj Noun
-d)
-=========================================================================================
-C:\Users\chaimc\AppData\Local\Programs\Python\Python39\python.exe C:/NLP/NLP_HW4_314389248/cky.py --mode inference --sent "the president ate the delicious sandwich"
-(S (NP (Det the) (Noun president)) (VP (Verb ate) (NP (Det the) (Noun (Adj delicious) (Noun sandwich)))))
-"""
